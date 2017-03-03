@@ -1,7 +1,8 @@
-public class BSNode(override var key: Int, override var value: Int, override var size: Int = 0) : Node{
+public class BSNode(override var key: Int, override var value: Int) : Node{
 
     var left: BSNode? = null
     var right: BSNode? = null
+    override var size: Int = 0
 
 }
 

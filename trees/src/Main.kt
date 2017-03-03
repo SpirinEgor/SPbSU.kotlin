@@ -4,8 +4,8 @@ fun main(args: Array<String>){
     val read = Scanner(System.`in`)
     val random = Random()
 
-    var root: BSNode? = null
-    val tree = BinarySearchTree(root)
+    var root: RBNode? = null
+    val tree = RedBlackTree(root)
 
     println("Для управления деревом используйте: \n 1 x - добавить x \n " +
         "2 x - удалить x \n " +
@@ -38,8 +38,8 @@ fun main(args: Array<String>){
             continue
         }
         when (com){
-            1 -> tree.add(BSNode(x, x))
-            2 -> tree.remove(x)
+            1 -> tree.add(RBNode(x, x, true))
+            //2 -> tree.remove(x)
             3 -> println(tree.check(x))
             4 -> tree.draw()
             else -> return
