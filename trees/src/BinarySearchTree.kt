@@ -1,26 +1,25 @@
-import java.util.Scanner
+public class BSNode(override var key: Int, override var value: Int, override var size: Int = 0) : Node{
 
-class Node(var value: Int){   //класс вершины
-    var left: Node? = null  //ссылка на левое поддерево
-    var right: Node? = null //ссылка на правое поддерево
-    var size: Int = 1   //размер дерева от этой вершины включительно
+    var left: BSNode? = null
+    var right: BSNode? = null
+
 }
 
-class BinarySearchTree(var root: Node?){ //класс бинарного дерево поиска
-   
-    fun draw(){ //функция рисования дерева
+public class BinarySearchTree(var root: BSNode?){
+
+    public fun draw(){ //функция рисования дерева
         if (root == null){  //если корень не существует
             println("Дерево еще не создано")
             return
         }
-        var queue: MutableList<Node?> = mutableListOf() //лист для вывода текущего уровня
+        var queue: MutableList<BSNode?> = mutableListOf() //лист для вывода текущего уровня
         queue.add(root)
         var isPrint = true
         var indent = 50 //регулировка кривости 1.0
         while (isPrint){
             isPrint = false
             indent = (2 * indent - 1) / 3   //регулировка кривости 2.0
-            var new_queue: MutableList<Node?> = mutableListOf() //следующий уровень
+            var new_queue: MutableList<BSNode?> = mutableListOf() //следующий уровень
             for (i in 0..queue.size - 1){
                 for (j in 1..indent)    //отступ
                     print(" ")
@@ -30,8 +29,8 @@ class BinarySearchTree(var root: Node?){ //класс бинарного дер�
                     new_queue.add(null)
                 }
                 else{
-                    isPrint = true  
-                    print(queue[i]?.value)  //вывели значение
+                    isPrint = true
+                    print("(${queue[i]?.key}/${queue[i]?.value})")  //вывели значение
                     new_queue.add(queue[i]?.left)   //добавили детей
                     new_queue.add(queue[i]?.right)
                 }
@@ -41,17 +40,23 @@ class BinarySearchTree(var root: Node?){ //класс бинарного дер�
         }
     }
 
-    fun add(adding: Int){   //функция добавления элемента
+    public fun add(adding: BSNode?) {   //добавление вершины
+        if (adding == null){
+            return
+        }
         if (root == null){  //если корень не существует
-            root = Node(adding)
-            return;
+            root = BSNode(adding.key, adding.value)
+            return
         }
         var cur = root
         while (true){
-            ++cur!!.size
-            if (cur.value < adding){  //если больше текущего, то идем вправо
+            if (cur == null){
+                return
+            }
+            ++cur.size
+            if (cur.key < adding.key){  //если больше текущего, то идем вправо
                 if (cur.right == null){ //если справа пусто, то ставим туда новую вершину
-                    cur.right = Node(adding)
+                    cur.right = BSNode(adding.key, adding.value)
                     return
                 }
                 else{   //иначе переходим в правое поддерево
@@ -60,7 +65,7 @@ class BinarySearchTree(var root: Node?){ //класс бинарного дер�
             }
             else{    //если меньше или равно, то идем влево
                 if (cur.left == null){  //если слева пусто, то ставим туда новую вершину
-                    cur.left = Node(adding)
+                    cur.left = BSNode(adding.key, adding.value)
                     return
                 }
                 else{   //иначе переходим влево
@@ -70,12 +75,15 @@ class BinarySearchTree(var root: Node?){ //класс бинарного дер�
         }
     }
 
-    fun remove(removing: Int){ //функция удаления элемента
+    public fun remove(removing: Int?){ //функция удаления элемента
+        if (removing == null){
+            return
+        }
         if (root == null){  //если корня не существует
             return
         }
         var cur = root
-        var prev: Node? = null
+        var prev: BSNode? = null
         var side = true
         while(true){
             if (cur == null){   //если элемент не найден
@@ -106,7 +114,7 @@ class BinarySearchTree(var root: Node?){ //класс бинарного дер�
                     }
                     return
                 }
-                else if (cur.left == null || cur.right == null){    //если один из ребенков null, то у родителя заменяем ссылку на существующего, 
+                else if (cur.left == null || cur.right == null){    //если один из ребенков null, то у родителя заменяем ссылку на существующего,
                     if (cur.left != null){                          //если нет родителя, то ставим новый корень
                         if (prev != null){
                             if (side == true){
@@ -116,12 +124,12 @@ class BinarySearchTree(var root: Node?){ //класс бинарного дер�
                                 prev.right = cur.left
                             }
                         }
-                        else{   
+                        else{
                             root = cur.left
                         }
                     }
                     else{
-                         if (prev != null){
+                        if (prev != null){
                             if (side == true){
                                 prev.left = cur.right
                             }
@@ -159,7 +167,10 @@ class BinarySearchTree(var root: Node?){ //класс бинарного дер�
         }
     }
 
-    fun check(checking: Int): Boolean{  //функция проверки наличия элемента
+    public fun check(checking: Int?): Boolean{  //функция проверки наличия элемента
+        if (checking == null){
+            return false
+        }
         var cur = root
         while (true){
             if (cur == null){   //отсутствует
@@ -179,28 +190,4 @@ class BinarySearchTree(var root: Node?){ //класс бинарного дер�
         }
     }
 
-}
-
-fun main(args: Array<String>){
-    val read = Scanner(System.`in`)
-
-    var root: Node? = null
-    val tree = BinarySearchTree(root)
-   
-    println("Для управления деревом используйте: \n 1 x - добавить x \n 2 x - удалить x \n 3 x - проверить наличие x \n 4 - нарисовать дерево\n 5 - выход")
-    var com: Int
-    var x: Int = 0
-    while (true){
-        com = read.nextInt()
-        if (com >= 1 && com <= 3){
-            x = read.nextInt()
-        }
-        when (com){
-            1 -> tree.add(x)
-            2 -> tree.remove(x)
-            3 -> println(tree.check(x))
-            4 -> tree.draw()
-            else -> return 
-        }
-    }
 }
