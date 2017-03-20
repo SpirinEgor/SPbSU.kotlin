@@ -2,10 +2,8 @@ import java.util.*
 
 fun main(args: Array<String>){
     val read = Scanner(System.`in`)
-    val random = Random()
 
-    var root: RBNode? = null
-    val tree = RedBlackTree(root)
+    val tree: RedBlackTree<Int, Int> = RedBlackTree(null)
 
     println("Для управления деревом используйте: \n 1 x - добавить x \n " +
         "2 x - удалить x \n " +
@@ -17,7 +15,7 @@ fun main(args: Array<String>){
     var x: Int = 0
     while (true){
         r = read.next()
-        var check: Boolean = true
+        var check: Boolean =    true
         try{
             com = Integer.parseInt(r)
         }
@@ -38,10 +36,15 @@ fun main(args: Array<String>){
             continue
         }
         when (com){
-            1 -> tree.add(RBNode(x, x, true))
+            1 -> tree.add(x, x)
             //2 -> tree.remove(x)
             3 -> println(tree.check(x))
             4 -> tree.draw()
+            5 -> {
+                for (i in tree){
+                    println("qwe")
+                }
+            }
             else -> return
         }
     }

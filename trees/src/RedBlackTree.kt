@@ -1,38 +1,30 @@
-public class RBNode(override var key: Int, override var value: Int, var color: Boolean): Node{
-
-    var left: RBNode? = null
-    var right: RBNode? = null
-    var parent: RBNode? = null
-    override var size: Int = 0
-
-}
-
-public class RedBlackTree(var root: RBNode?){
+public class RedBlackTree<K : Comparable<K>, V>(override var root: RBNode<K, V>?): RedBlackTreeIterator<K, V>(root) {
 
     public fun draw(){ //функция рисования дерева
         if (root == null){  //если корень не существует
             println("Дерево еще не создано")
             return
         }
-        var queue: MutableList<RBNode?> = mutableListOf() //лист для вывода текущего уровня
-        queue.add(root)
+        var queue: MutableList<RBNode<K, V>?> = mutableListOf() //лист для вывода текущего уровня
+        queue.add(root!!)
         var isPrint = true
-        var indent = 50 //регулировка кривости 1.0
+        var indent = 64 //регулировка кривости 1.0
         while (isPrint){
             isPrint = false
-            indent = (2 * indent - 1) / 3   //регулировка кривости 2.0
-            var new_queue: MutableList<RBNode?> = mutableListOf() //следующий уровень
+            indent = indent / 2;   //регулировка кривости 2.0
+            var new_queue: MutableList<RBNode<K, V>?> = mutableListOf() //следующий уровень
             for (i in 0..queue.size - 1){
                 for (j in 1..indent)    //отступ
                     print(" ")
                 if (queue[i] == null){  //если нет вершины, то пропуск
-                    print(" ")
+                    for (j in 1..10)
+                        print(" ")
                     new_queue.add(null) //и добавляем null
                     new_queue.add(null)
                 }
                 else{
                     isPrint = true
-                    print("(${queue[i]?.key}/${queue[i]?.value}/${if (queue[i]?.color == true) "RED" else "BLACK"})")  //вывели значение
+                    print("(${queue[i]?.key}/${queue[i]?.value}/${if (queue[i]?.color == true) "RED" else "BLACK"}/$i)")  //вывели значение
                     new_queue.add(queue[i]?.left)   //добавили детей
                     new_queue.add(queue[i]?.right)
                 }
@@ -42,21 +34,21 @@ public class RedBlackTree(var root: RBNode?){
         }
     }
 
-    public fun check(checking: Int?): Boolean{  //функция проверки наличия элемента
+    public fun check(checking: K?): kotlin.Boolean{  //функция проверки наличия элемента
         if (checking == null){
             return false
         }
-        var cur = root
+        var dad = root
         while (true){
-            if (cur == null){   //отсутствует
+            if (dad == null){   //отсутствует
                 return false
             }
             else{
-                if (cur.value < checking){  //спускаемся вправо
-                    cur = cur.right
+                if (dad.key < checking){  //спускаемся вправо
+                    dad = dad.right!!
                 }
-                else if (cur.value > checking){ //спускаемся влево
-                    cur = cur.left
+                else if (dad.key > checking){ //спускаемся влево
+                    dad = dad.left!!
                 }
                 else{   //наличие
                     return true
@@ -65,124 +57,128 @@ public class RedBlackTree(var root: RBNode?){
         }
     }
 
-    private fun rotate_right(start: RBNode?): RBNode?{
+    private fun rotate_right(start: RBNode<K, V>): RBNode<K, V>{
         if (start == null){
-            return null
+            return null!!
         }
         var res = start?.left
+        res?.parent = start.parent
         if (start.left?.right == null)
             start.left = null
         else
             start.left = start.left?.right
         res?.right = start
-        return res
+        start.parent = res
+        return res!!
     }
 
-    private fun rotate_left(start: RBNode?): RBNode?{
+    private fun rotate_left(start: RBNode<K, V>): RBNode<K, V>{
         if (start == null){
-            return null
+            return null!!
         }
         var res = start?.right
+        res?.parent = start.parent
         if (start.right?.left == null)
             start.right = null
         else
             start.right = start.right?.left
         res?.left = start
-        return res
+        start.parent = res
+        return res!!
     }
 
-    public fun add(adding: RBNode?){   //функция добавления элемента
-        if (adding == null){
-            return
-        }
+    public fun add(key: K, value: V){   //функция добавления элемента
         if (root == null){  //если корень не существует
-            root = RBNode(adding.key, adding.value, false)
+            root = RBNode(key, value, false)
             return;
         }
-        var cur = root  //отец нового элемента
-        var prev = root  //дед нового элемента
-        var side: Boolean = true  //направление от деда
-        var cur_side: Boolean  //направление от отца
+        var dad = root  //отец нового элемента
+        var grdad = root  //дед нового элемента
+        var dir_grdad: kotlin.Boolean = true  //направление от деда
+        var dir_dad: kotlin.Boolean  //направление от отца
         while (true){
-            ++cur!!.size
-            if (cur.key < adding.key){  //если больше текущего, то идем вправо
-                if (cur.right == null){ //если справа пусто, то ставим туда новую вершину
-                    cur.right = RBNode(adding.key, adding.value, true)
-                    cur.right?.parent = cur
-                    cur_side = false
+            ++dad!!.size
+            if (dad.key < key){  //если больше текущего, то идем вправо
+                if (dad.right == null){ //если справа пусто, то ставим туда новую вершину
+                    dad.right = RBNode(key, value, true)
+                    dad.right?.parent = dad
+                    dir_dad = false
                     break
                 }
                 else{   //иначе переходим в правое поддерево
-                    prev = cur
-                    side = false
-                    cur = cur.right
+                    grdad = dad
+                    dir_grdad = false
+                    dad = dad.right!!
                 }
             }
-            else{    //если меньше или равно, то идем влево
-                if (cur.left == null){  //если слева пусто, то ставим туда новую вершину
-                    cur.left = RBNode(adding.key, adding.value, true)
-                    cur.left?.parent = cur
-                    cur_side = true
+            else if (dad.key > key){    //если меньше, то идем влево
+                if (dad.left == null){  //если слева пусто, то ставим туда новую вершину
+                    dad.left = RBNode(key, value, true)
+                    dad.left?.parent = dad
+                    dir_dad = true
                     break
                 }
                 else{   //иначе переходим влево
-                    prev = cur
-                    side = true
-                    cur = cur.left
+                    grdad = dad
+                    dir_grdad = true
+                    dad = dad.left!!
                 }
             }
+            else{   //если равно, то такой элемент есть и ничего не меняем
+                return
+            }
         }
-        if (cur?.color == false){    //балансировка
+        if (dad?.color == false){    //балансировка
             return  //если отец нового элемента черный
         }
         else{   //если отец нового элемента красный
-            var uncle_color: Boolean    //определяем цвет дяди
-            if (side == true){
-                if (prev?.right == null)
+            var uncle_color: kotlin.Boolean    //определяем цвет дяди
+            if (dir_grdad == true){
+                if (grdad?.right == null)
                     uncle_color = false
                 else
-                    uncle_color = prev?.right?.color!!
+                    uncle_color = grdad?.right?.color!!
             }
             else{
-                if (prev?.left == null)
+                if (grdad?.left == null)
                     uncle_color = false
                 else
-                    uncle_color = prev?.left?.color!!
+                    uncle_color = grdad?.left?.color!!
             }
             if (uncle_color == true){   //если дядя красный
-                if (prev?.right != null) prev?.right?.color = false
-                if (prev?.left != null) prev?.left?.color = false
-                if (prev != root) prev?.color = true
+                if (grdad?.right != null) grdad?.right?.color = false
+                if (grdad?.left != null) grdad?.left?.color = false
+                if (grdad != root) grdad?.color = true
             }
             else{   //если дядя черный
-                if (side == true){  //случай левого потомка деда
-                    if (cur_side == false){ //если правый потомок отца
-                        prev?.left = rotate_left(cur)
-                        cur_side = true
-                        cur = prev?.left
+                if (dir_grdad == true){  //случай левого потомка деда
+                    if (dir_dad == false){ //если правый потомок отца
+                        dad?.parent?.left = rotate_left(dad!!)
+                        dir_dad = true
+                        dad = dad?.parent?.left!!
                     }
-                    cur?.color = false
-                    prev?.color = true
-                    if (prev?.parent != null){
-                        prev?.parent?.left = rotate_right(prev)
+                    dad?.color = false
+                    grdad?.color = true
+                    if (grdad?.parent != null){
+                        grdad?.parent?.left = rotate_right(grdad!!)
                     }
                     else{
-                        root = rotate_right(prev)
+                        root = rotate_right(grdad!!)
                     }
                 }
                 else{   //случай правого потомка деда
-                    if (cur_side == true) {  //если левый потомок отца
-                        prev?.right = rotate_right(cur)
-                        cur_side = false
-                        cur = prev?.right
+                    if (dir_dad == true) {  //если левый потомок отца
+                        dad?.parent?.right = rotate_right(dad!!)
+                        dir_dad = false
+                        dad = dad?.parent?.right!!
                     }
-                    cur?.color = false
-                    prev?.color = true
-                    if (prev?.parent != null){
-                        prev?.parent?.right = rotate_left(prev)
+                    dad?.color = false
+                    grdad?.color = true
+                    if (grdad?.parent != null){
+                        grdad?.parent?.right = rotate_left(grdad!!)
                     }
                     else{
-                        root = rotate_left(prev)
+                        root = rotate_left(grdad!!)
                     }
                 }
             }

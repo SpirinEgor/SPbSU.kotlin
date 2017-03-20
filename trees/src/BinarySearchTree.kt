@@ -1,26 +1,18 @@
-public class BSNode(override var key: Int, override var value: Int) : Node{
-
-    var left: BSNode? = null
-    var right: BSNode? = null
-    override var size: Int = 0
-
-}
-
-public class BinarySearchTree(var root: BSNode?){
+public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?){
 
     public fun draw(){ //функция рисования дерева
         if (root == null){  //если корень не существует
             println("Дерево еще не создано")
             return
         }
-        var queue: MutableList<BSNode?> = mutableListOf() //лист для вывода текущего уровня
+        var queue: MutableList<BSNode<K, V>?> = mutableListOf() //лист для вывода текущего уровня
         queue.add(root)
         var isPrint = true
         var indent = 50 //регулировка кривости 1.0
         while (isPrint){
             isPrint = false
             indent = (2 * indent - 1) / 3   //регулировка кривости 2.0
-            var new_queue: MutableList<BSNode?> = mutableListOf() //следующий уровень
+            var new_queue: MutableList<BSNode<K, V>?> = mutableListOf() //следующий уровень
             for (i in 0..queue.size - 1){
                 for (j in 1..indent)    //отступ
                     print(" ")
@@ -41,12 +33,12 @@ public class BinarySearchTree(var root: BSNode?){
         }
     }
 
-    public fun add(adding: BSNode?) {   //добавление вершины
-        if (adding == null){
+    public fun add(key: K, value: V) {   //добавление вершины
+        if (key == null){
             return
         }
         if (root == null){  //если корень не существует
-            root = BSNode(adding.key, adding.value)
+            root = BSNode(key, value)
             return
         }
         var cur = root
@@ -55,9 +47,9 @@ public class BinarySearchTree(var root: BSNode?){
                 return
             }
             ++cur.size
-            if (cur.key < adding.key){  //если больше текущего, то идем вправо
+            if (cur.key < key){  //если больше текущего, то идем вправо
                 if (cur.right == null){ //если справа пусто, то ставим туда новую вершину
-                    cur.right = BSNode(adding.key, adding.value)
+                    cur.right = BSNode(key, value)
                     return
                 }
                 else{   //иначе переходим в правое поддерево
@@ -66,7 +58,7 @@ public class BinarySearchTree(var root: BSNode?){
             }
             else{    //если меньше или равно, то идем влево
                 if (cur.left == null){  //если слева пусто, то ставим туда новую вершину
-                    cur.left = BSNode(adding.key, adding.value)
+                    cur.left = BSNode(key, value)
                     return
                 }
                 else{   //иначе переходим влево
@@ -76,26 +68,26 @@ public class BinarySearchTree(var root: BSNode?){
         }
     }
 
-    public fun remove(removing: Int?){ //функция удаления элемента
-        if (removing == null){
+    public fun remove(key: K){ //функция удаления элемента
+        if (key == null){
             return
         }
         if (root == null){  //если корня не существует
             return
         }
         var cur = root
-        var prev: BSNode? = null
+        var prev: BSNode<K, V>? = null
         var side = true
         while(true){
             if (cur == null){   //если элемент не найден
                 return
             }
-            else if (cur.value < removing){ //спускаемся вправо
+            else if (cur.key < key){ //спускаемся вправо
                 prev = cur
                 cur = cur.right
                 side = false
             }
-            else if (cur.value > removing){ //спускаемся влево
+            else if (cur.key > key){ //спускаемся влево
                 prev = cur
                 cur = cur.left
                 side = true
@@ -168,8 +160,8 @@ public class BinarySearchTree(var root: BSNode?){
         }
     }
 
-    public fun check(checking: Int?): Boolean{  //функция проверки наличия элемента
-        if (checking == null){
+    public fun check(key: K): Boolean{  //функция проверки наличия элемента
+        if (key == null){
             return false
         }
         var cur = root
@@ -178,10 +170,10 @@ public class BinarySearchTree(var root: BSNode?){
                 return false
             }
             else{
-                if (cur.value < checking){  //спускаемся вправо
+                if (cur.key < key){  //спускаемся вправо
                     cur = cur.right
                 }
-                else if (cur.value > checking){ //спускаемся влево
+                else if (cur.key > key){ //спускаемся влево
                     cur = cur.left
                 }
                 else{   //наличие
