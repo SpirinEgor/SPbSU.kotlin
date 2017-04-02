@@ -6,10 +6,11 @@ fun main(args: Array<String>){
     val tree: RedBlackTree<Int, Int> = RedBlackTree(null)
 
     println("Для управления деревом используйте: \n 1 x - добавить x \n " +
-        "2 x - удалить x \n " +
-        "3 x - проверить наличие x \n " +
-        "4 - нарисовать дерево\n " +
-        "5 - выход")
+            "2 x - удалить x \n " +
+            "3 x - проверить наличие x \n " +
+            "4 - нарисовать дерево\n " +
+            "5 - вывод итератором\n" +
+            "6 - выход")
     var r: String
     var com: Int = 5
     var x: Int = 0
@@ -37,12 +38,12 @@ fun main(args: Array<String>){
         }
         when (com){
             1 -> tree.add(x, x)
-            //2 -> tree.remove(x)
+        //2 -> tree.remove(x)
             3 -> println(tree.check(x))
             4 -> tree.draw()
             5 -> {
                 for (i in tree){
-                    println("qwe")
+                    println("(${i.key}/${i.value}/${if (i.color == true) "RED" else "BLACK"})")
                 }
             }
             else -> return

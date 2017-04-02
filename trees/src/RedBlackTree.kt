@@ -1,4 +1,4 @@
-public class RedBlackTree<K : Comparable<K>, V>(override var root: RBNode<K, V>?): RedBlackTreeIterator<K, V>(root) {
+public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterable<RBNode<K, V>>{
 
     public fun draw(){ //функция рисования дерева
         if (root == null){  //если корень не существует
@@ -184,5 +184,7 @@ public class RedBlackTree<K : Comparable<K>, V>(override var root: RBNode<K, V>?
             }
         }
     }
+
+    override fun iterator(): Iterator<RBNode<K, V>> = RedBlackTreeIterator(root)
 
 }
