@@ -2,7 +2,48 @@ class Tree <K: Comparable<K>, V> (var root: Node<K, V>? = null, val t: Int = 5):
 
     override fun iterator(): Iterator<Node<K, V>> = TreeIterator(root)  //итератор
 
-    public fun search(searching: K): V? = search(searching, root) //поиск элемента
+    public fun draw(){  //рисование дерева
+        if (root == null){  //если корень не существует
+            println("Дерево еще не создано")
+            return
+        }
+        var queue: MutableList<Node<K, V>?> = mutableListOf() //лист для вывода текущего уровня
+        queue.add(root!!)
+        var isPrint = true
+        var indent = 64 //регулировка кривости 1.0
+        while (isPrint){
+            isPrint = false
+            indent = indent / 2;   //регулировка кривости 2.0
+            var new_queue: MutableList<Node<K, V>?> = mutableListOf() //следующий уровень
+            for (i in 0..queue.size - 1){
+                for (j in 1..indent)    //отступ
+                    print(" ")
+                if (queue[i] == null){  //если нет вершины, то пропуск
+                    for (j in 1..10)
+                        print(" ")
+                    new_queue.add(null) //и добавляем null
+                    new_queue.add(null)
+                }
+                else{
+                    isPrint = true
+                    var print: String = "("
+                    for (k in queue[i]!!.keys){
+                        print += k.first
+                        if (k != queue[i]!!.keys.last())
+                            print += ","
+                    }
+                    print += ";${i})"
+                    print(print)
+                    for (ch in queue[i]!!.child)
+                        new_queue.add(ch)
+                }
+            }
+            println()
+            queue = new_queue
+        }
+    }
+
+    public fun search(key: K): V? = search(key, root) //поиск элемента
 
     private fun search(key: K, node: Node<K, V>?): V?{
         if (node == null)

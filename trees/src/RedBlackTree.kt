@@ -1,18 +1,18 @@
-public class RedBlackTree<K : Comparable<K>, V>(var root: RedBlackTree.RBNode<K, V>?): Iterable<RedBlackTree.RBNode<K, V>>{
+public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterable<RBNode<K, V>>{
 
     public fun draw(){ //функция рисования дерева
         if (root == null){  //если корень не существует
             println("Дерево еще не создано")
             return
         }
-        var queue: MutableList<RedBlackTree.RBNode<K, V>?> = mutableListOf() //лист для вывода текущего уровня
+        var queue: MutableList<RBNode<K, V>?> = mutableListOf() //лист для вывода текущего уровня
         queue.add(root!!)
         var isPrint = true
         var indent = 64 //регулировка кривости 1.0
         while (isPrint){
             isPrint = false
             indent = indent / 2;   //регулировка кривости 2.0
-            var new_queue: MutableList<RedBlackTree.RBNode<K, V>?> = mutableListOf() //следующий уровень
+            var new_queue: MutableList<RBNode<K, V>?> = mutableListOf() //следующий уровень
             for (i in 0..queue.size - 1){
                 for (j in 1..indent)    //отступ
                     print(" ")
@@ -57,7 +57,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RedBlackTree.RBNode<K,
         }
     }
 
-    private fun rotate_right(start: RedBlackTree.RBNode<K, V>): RedBlackTree.RBNode<K, V> {
+    private fun rotate_right(start: RBNode<K, V>): RBNode<K, V> {
         if (start == null){
             return null!!
         }
@@ -72,7 +72,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RedBlackTree.RBNode<K,
         return res!!
     }
 
-    private fun rotate_left(start: RedBlackTree.RBNode<K, V>): RedBlackTree.RBNode<K, V> {
+    private fun rotate_left(start: RBNode<K, V>): RBNode<K, V> {
         if (start == null){
             return null!!
         }
@@ -89,7 +89,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RedBlackTree.RBNode<K,
 
     public fun add(key: K, value: V){   //функция добавления элемента
         if (root == null){  //если корень не существует
-            root = RedBlackTree.RBNode(key, value, false)
+            root = RBNode(key, value, false)
             return;
         }
         var dad = root  //отец нового элемента
@@ -100,7 +100,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RedBlackTree.RBNode<K,
             ++dad!!.size
             if (dad.key < key){  //если больше текущего, то идем вправо
                 if (dad.right == null){ //если справа пусто, то ставим туда новую вершину
-                    dad.right = RedBlackTree.RBNode(key, value, true)
+                    dad.right = RBNode(key, value, true)
                     dad.right?.parent = dad
                     dir_dad = false
                     break
@@ -113,7 +113,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RedBlackTree.RBNode<K,
             }
             else if (dad.key > key){    //если меньше, то идем влево
                 if (dad.left == null){  //если слева пусто, то ставим туда новую вершину
-                    dad.left = RedBlackTree.RBNode(key, value, true)
+                    dad.left = RBNode(key, value, true)
                     dad.left?.parent = dad
                     dir_dad = true
                     break
@@ -185,6 +185,6 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RedBlackTree.RBNode<K,
         }
     }
 
-    override fun iterator(): Iterator<RedBlackTree.RBNode<K, V>> = RedBlackTree.RedBlackTreeIterator(root)
+    override fun iterator(): Iterator<RBNode<K, V>> = RedBlackTreeIterator(root)
 
 }

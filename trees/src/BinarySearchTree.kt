@@ -1,20 +1,18 @@
-package BinarySearchTree
-
-public class BinarySearchTree<K : Comparable<K>, V>(var root: BinarySearchTree.BSNode<K, V>?){
+public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?){
 
     public fun draw(){ //функция рисования дерева
         if (root == null){  //если корень не существует
             println("Дерево еще не создано")
             return
         }
-        var queue: MutableList<BinarySearchTree.BSNode<K, V>?> = mutableListOf() //лист для вывода текущего уровня
+        var queue: MutableList<BSNode<K, V>?> = mutableListOf() //лист для вывода текущего уровня
         queue.add(root)
         var isPrint = true
         var indent = 50 //регулировка кривости 1.0
         while (isPrint){
             isPrint = false
             indent = (2 * indent - 1) / 3   //регулировка кривости 2.0
-            var new_queue: MutableList<BinarySearchTree.BSNode<K, V>?> = mutableListOf() //следующий уровень
+            var new_queue: MutableList<BSNode<K, V>?> = mutableListOf() //следующий уровень
             for (i in 0..queue.size - 1){
                 for (j in 1..indent)    //отступ
                     print(" ")
@@ -40,7 +38,7 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BinarySearchTree.B
             return
         }
         if (root == null){  //если корень не существует
-            root = BinarySearchTree.BSNode(key, value)
+            root = BSNode(key, value)
             return
         }
         var cur = root
@@ -51,7 +49,7 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BinarySearchTree.B
             ++cur.size
             if (cur.key < key){  //если больше текущего, то идем вправо
                 if (cur.right == null){ //если справа пусто, то ставим туда новую вершину
-                    cur.right = BinarySearchTree.BSNode(key, value)
+                    cur.right = BSNode(key, value)
                     return
                 }
                 else{   //иначе переходим в правое поддерево
@@ -60,7 +58,7 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BinarySearchTree.B
             }
             else{    //если меньше или равно, то идем влево
                 if (cur.left == null){  //если слева пусто, то ставим туда новую вершину
-                    cur.left = BinarySearchTree.BSNode(key, value)
+                    cur.left = BSNode(key, value)
                     return
                 }
                 else{   //иначе переходим влево
@@ -78,7 +76,7 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BinarySearchTree.B
             return
         }
         var cur = root
-        var prev: BinarySearchTree.BSNode<K, V>? = null
+        var prev: BSNode<K, V>? = null
         var side = true
         while(true){
             if (cur == null){   //если элемент не найден
