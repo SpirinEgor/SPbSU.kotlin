@@ -1,9 +1,11 @@
-open class RedBlackTreeIterator<K : Comparable<K>, V>(var node: RBNode<K, V>?): Iterator<RBNode<K, V>>{
+package RedBlackTree
 
-    private var next: RBNode<K, V>? = null
-    private var cur: RBNode<K, V>? = null
+open class RedBlackTreeIterator<K : Comparable<K>, V>(var node: RedBlackTree.RBNode<K, V>?): Iterator<RedBlackTree.RBNode<K, V>>{
 
-    private fun get_min(cur: RBNode<K, V>): RBNode<K, V> = if (cur.left != null) get_min(cur.left!!) else cur
+    private var next: RedBlackTree.RBNode<K, V>? = null
+    private var cur: RedBlackTree.RBNode<K, V>? = null
+
+    private fun get_min(cur: RedBlackTree.RBNode<K, V>): RedBlackTree.RBNode<K, V> = if (cur.left != null) get_min(cur.left!!) else cur
 
     override fun hasNext(): Boolean {
         if (node == null)
@@ -26,6 +28,6 @@ open class RedBlackTreeIterator<K : Comparable<K>, V>(var node: RBNode<K, V>?): 
         }
     }
 
-    override fun next(): RBNode<K, V> = next!!
+    override fun next(): RedBlackTree.RBNode<K, V> = next!!
 
 }
