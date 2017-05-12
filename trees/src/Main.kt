@@ -38,8 +38,11 @@ fun main(args: Array<String>){
         }
         when (com){
             1 -> tree.add(x, x)
-        //2 -> tree.remove(x)
-            3 -> println(tree.check(x))
+            2 -> tree.remove(x)
+            3 -> {
+                var found = tree.check(x)
+                println(if (found == null) "NO" else "YES")
+            }
             4 -> tree.draw()
             5 -> {
                 for (i in tree){
