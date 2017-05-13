@@ -4,7 +4,7 @@ import Tree
 
 public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tree<K, V>{
 
-    public fun draw(){ //функция рисования дерева
+    public override fun draw(){ //функция рисования дерева
         if (root == null){  //если корень не существует
             println("Дерево еще не создано")
             return
@@ -37,11 +37,13 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tr
         }
     }
 
-    public fun add(key: K, value: V) {   //добавление вершины
+    public override fun add(key: K, value: V) {   //добавление вершины
         if (root == null){  //если корень не существует
             root = BSNode(key, value)
             return
         }
+        if (check(key))
+            return
         var cur = root
         while (true){
             if (cur == null){
@@ -68,11 +70,12 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tr
         }
     }
 
-    public fun remove(key: K){ //функция удаления элемента
-
+    public override fun remove(key: K){ //функция удаления элемента
         if (root == null){  //если корня не существует
             return
         }
+        if (!check(key))
+            return
         var cur = root
         var prev: BSNode<K, V>? = null
         var side = true
@@ -158,14 +161,11 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tr
         }
     }
 
-    public fun check(key: K): Boolean{  //функция проверки наличия элемента
-        if (key == null){
-            return false
-        }
+    public fun search(key: K): BSNode<K, V>?{  //функция проверки наличия элемента
         var cur = root
         while (true){
             if (cur == null){   //отсутствует
-                return false
+                return null
             }
             else{
                 if (cur.key < key){  //спускаемся вправо
@@ -175,10 +175,12 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tr
                     cur = cur.left
                 }
                 else{   //наличие
-                    return true
+                    return cur
                 }
             }
         }
     }
+
+    public override fun check(key: K): Boolean = search(key) != null
 
 }

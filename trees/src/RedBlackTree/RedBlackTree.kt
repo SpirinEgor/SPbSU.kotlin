@@ -6,7 +6,9 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
 
     var nil: RBNode<K, V>? = null
 
-    public fun draw(){ //функция рисования дерева
+    override fun iterator(): Iterator<RBNode<K, V>> = RedBlackTreeIterator(root, nil)
+
+    public override fun draw(){ //функция рисования дерева
         if (root == null || root == nil){  //если корень не существует
             println("Дерево еще не создано")
             return
@@ -40,7 +42,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
         }
     }
 
-    public fun check(key: K): RBNode<K, V>?{  //функция проверки наличия элемента
+    public fun search(key: K): RBNode<K, V>?{  //функция проверки наличия элемента
         if (root == null)
             return null
         var cur = root
@@ -55,7 +57,9 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
         return null
     }
 
-    private fun fix_insert(add: RBNode<K, V>){
+    public override fun check(key: K): Boolean = search(key) != null
+
+    private fun fix_add(add: RBNode<K, V>){
         var cur = add
         while (cur != root && cur.parent!!.color){
             if (cur.parent == cur.parent!!.parent!!.left){
@@ -97,7 +101,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
         root!!.color = false
     }
 
-    public fun add(key: K, value: V){
+    public override fun add(key: K, value: V){
         if (root == null){
             root = RBNode(key, value, false)
             nil = RBNode(key, null, false)
@@ -106,7 +110,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
             root!!.right = nil
             return
         }
-        if (check(key) != null)
+        if (check(key))
             return
         val new = RBNode(key, value, true)
         var dad = nil
@@ -127,7 +131,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
             dad.right = new
         new.left = nil
         new.right = nil
-        fix_insert(new)
+        fix_add(new)
     }
 
     private fun transplate(old: RBNode<K, V>, new: RBNode<K, V>){   //замена поддерева другим
@@ -144,99 +148,97 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
         }
     }
 
-    private fun fix_remove(xx: RBNode<K, V>){   //перебалансировка по Кормену
-        var x = xx
-        var w: RBNode<K, V>
-        while (x != root && !x.color){
-            if (x == x.parent!!.left){
-                w = x.parent!!.right!!
-                if (w.color){
-                    w.color = false
-                    x.parent!!.color = true
-                    root = x.parent!!.rotate_left(nil!!, root!!)
-                    w = x.parent!!.right!!
+    private fun fix_remove(replace: RBNode<K, V>){   //перебалансировка по Кормену
+        var cur = replace
+        var bro: RBNode<K, V>
+        while (cur != root && !cur.color){
+            if (cur == cur.parent!!.left){
+                bro = cur.parent!!.right!!
+                if (bro.color){
+                    bro.color = false
+                    cur.parent!!.color = true
+                    root = cur.parent!!.rotate_left(nil!!, root!!)
+                    bro = cur.parent!!.right!!
                 }
-                if (!w.left!!.color && !w.right!!.color){
-                    w.color = true
-                    x = x.parent!!
+                if (!bro.left!!.color && !bro.right!!.color){
+                    bro.color = true
+                    cur = cur.parent!!
                 }
                 else {
-                    if (!w.right!!.color) {
-                        w.left!!.color = false
-                        w.color = true
-                        root = w.rotate_right(nil!!, root!!)
-                        w = x.parent!!.right!!
+                    if (!bro.right!!.color) {
+                        bro.left!!.color = false
+                        bro.color = true
+                        root = bro.rotate_right(nil!!, root!!)
+                        bro = cur.parent!!.right!!
                     }
-                    w.color = x.parent!!.color
-                    x.parent!!.color = false
-                    w.right!!.color = false
-                    root = x?.parent!!.rotate_left(nil!!, root!!)
-                    x = root!!
+                    bro.color = cur.parent!!.color
+                    cur.parent!!.color = false
+                    bro.right!!.color = false
+                    root = cur.parent!!.rotate_left(nil!!, root!!)
+                    cur = root!!
                 }
             }
             else {
-                w = x.parent!!.left!!
-                if (w.color) {
-                    w.color = false
-                    x.parent!!.color = true
-                    root = x.parent!!.rotate_right(nil!!, root!!)
-                    w = x.parent!!.left!!
+                bro = cur.parent!!.left!!
+                if (bro.color) {
+                    bro.color = false
+                    cur.parent!!.color = true
+                    root = cur.parent!!.rotate_right(nil!!, root!!)
+                    bro = cur.parent!!.left!!
                 }
-                if (!w.left!!.color && !w.right!!.color) {
-                    w.color = true
-                    x = x.parent!!
+                if (!bro.left!!.color && !bro.right!!.color) {
+                    bro.color = true
+                    cur = cur.parent!!
                 } else {
-                    if (!w.left!!.color) {
-                        w.right!!.color = false
-                        w.color = true
-                        root = w.rotate_left(nil!!, root!!)
-                        w = x.parent!!.left!!
+                    if (!bro.left!!.color) {
+                        bro.right!!.color = false
+                        bro.color = true
+                        root = bro.rotate_left(nil!!, root!!)
+                        bro = cur.parent!!.left!!
                     }
-                    w.color = x.parent!!.color
-                    x.parent!!.color = false
-                    w.left!!.color = false
-                    root = x?.parent!!.rotate_right(nil!!, root!!)
-                    x = root!!
+                    bro.color = cur.parent!!.color
+                    cur.parent!!.color = false
+                    bro.left!!.color = false
+                    root = cur.parent!!.rotate_right(nil!!, root!!)
+                    cur = root!!
                 }
             }
         }
-        x.color = false
+        cur.color = false
     }
 
-    public fun remove(key: K){
+    public override fun remove(key: K){
         if (root == null) return
-        val z = check(key) ?: return //находим удаляемый узел
-        var y = z
-        var original_color: Boolean = y.color    //изначальный узел
-        val x: RBNode<K, V>
-        if (z.left == nil){  //если нет левого ребенка или обоих
-            x = z.right!!
-            transplate(z, z.right!!)
+        val cur = search(key) ?: return//находим удаляемый узел
+        var cur_move = cur
+        var original_color: Boolean = cur_move.color    //изначальный узел
+        val replace: RBNode<K, V>
+        if (cur.left == nil){  //если нет левого ребенка или обоих
+            replace = cur.right!!
+            transplate(cur, cur.right!!)
         }
-        else if (z.right == nil){    //если нет правого ребенка
-            x = z.left!!
-            transplate(z, z.left!!)
+        else if (cur.right == nil){    //если нет правого ребенка
+            replace = cur.left!!
+            transplate(cur, cur.left!!)
         }
         else{   //если есть оба ребенка
-            y = z.right!!.getMinimum(nil!!)  //возьмем следущий узел и заменим им текущий, удалив его в исходном местоположение
-            original_color = y.color
-            x = y.right!!
-            if (y.parent == z)
-                x.parent = y
+            cur_move = cur.right!!.getMinimum(nil!!)  //возьмем следущий узел и заменим им текущий, удалив его в исходном местоположение
+            original_color = cur_move.color
+            replace = cur_move.right!!
+            if (cur_move.parent == cur)
+                replace.parent = cur_move
             else{
-                transplate(y, y.right!!)
-                y.right = z.right
-                y.right!!.parent = y
+                transplate(cur_move, cur_move.right!!)
+                cur_move.right = cur.right
+                cur_move.right!!.parent = cur_move
             }
-            transplate(z, y)
-            y.left = z.left
-            y.left!!.parent = y
-            y.color = z.color
+            transplate(cur, cur_move)
+            cur_move.left = cur.left
+            cur_move.left!!.parent = cur_move
+            cur_move.color = cur.color
         }
         if (!original_color)
-            fix_remove(x)
+            fix_remove(replace)
     }
-
-    override fun iterator(): Iterator<RBNode<K, V>> = RedBlackTreeIterator(root, nil)
 
 }
