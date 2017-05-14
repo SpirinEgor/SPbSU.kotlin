@@ -6,7 +6,7 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
 
     var nil: RBNode<K, V>? = null
 
-    override fun iterator(): Iterator<RBNode<K, V>> = RedBlackTreeIterator(root, nil)
+    override fun iterator(): Iterator<RBNode<K, V>> = RedBlackTreeIterator(this)
 
     public override fun draw(){ //функция рисования дерева
         if (root == null || root == nil){  //если корень не существует
@@ -16,23 +16,22 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
         var queue: MutableList<RBNode<K, V>?> = mutableListOf() //лист для вывода текущего уровня
         queue.add(root!!)
         var isPrint = true
-        var indent = 64 //регулировка кривости 1.0
+        var indent = 60 //регулировка кривости 1.0
         while (isPrint){
             isPrint = false
             indent = indent / 2;   //регулировка кривости 2.0
-            var new_queue: MutableList<RBNode<K, V>?> = mutableListOf() //следующий уровень
+            val new_queue: MutableList<RBNode<K, V>?> = mutableListOf() //следующий уровень
             for (i in 0..queue.size - 1){
                 for (j in 1..indent)    //отступ
                     print(" ")
                 if (queue[i] == null || queue[i] == nil){  //если нет вершины, то пропуск
-                    for (j in 1..10)
-                        print(" ")
+                    print(" null ")
                     new_queue.add(null) //и добавляем null
                     new_queue.add(null)
                 }
                 else{
                     isPrint = true
-                    print("(${queue[i]?.key}/${queue[i]?.value}/${if (queue[i]?.color == true) "RED" else "BLACK"}/$i)")  //вывели значение
+                    queue[i]!!.print()
                     new_queue.add(queue[i]?.left)   //добавили детей
                     new_queue.add(queue[i]?.right)
                 }

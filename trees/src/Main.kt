@@ -1,137 +1,27 @@
+import java.util.Scanner
+
 import RedBlackTree.*
 import BinarySearchTree.*
 import BTree.*
-import java.util.*
 
-fun work_with_BSTree(read: Scanner){
-    val tree: BinarySearchTree<Int, Int> = BinarySearchTree(null)
-    var r: String
-    var com: Int
-    var x: Int = 0
-    while (true){
-        r = read.next()
-        try{
-            com = Integer.parseInt(r)
-        }
-        catch (e: NumberFormatException){
-            println("Используйте цифры для выбора команд")
-            r = read.nextLine()
-            continue
-        }
-        if (com in 1..3){
-            r = read.next()
-        }
-        try{
-            if (com in 1..3)
-                x = Integer.parseInt(r)
-        }
-        catch (e: NumberFormatException){
-            println("Дерево настроено только для работы с целыми числами")
-            continue
-        }
-        when (com){
-            1 -> tree.add(x, x)
-            2 -> tree.remove(x)
-            3 -> {
-                val found = tree.check(x)
-                println(if (!found) "NO" else "YES")
-            }
-            4 -> tree.draw()
-//            5 -> {
-//                for (i in tree){
-//                    println("(${i.key}/${i.value}/${if (i.color == true) "RED" else "BLACK"})")
-//                }
-//            }
-            else -> return
-        }
+fun BST_iterate(tree: BinarySearchTree<Int, Int>) {
+    for (node in tree) {
+        node.print()
+        println()
     }
 }
 
-fun work_with_RBTree(read: Scanner){
-    val tree: RedBlackTree<Int, Int> = RedBlackTree(null)
-    var r: String
-    var com: Int
-    var x: Int = 0
-    while (true){
-        r = read.next()
-        try{
-            com = Integer.parseInt(r)
-        }
-        catch (e: NumberFormatException){
-            println("Используйте цифры для выбора команд")
-            r = read.nextLine()
-            continue
-        }
-        if (com in 1..3){
-            r = read.next()
-        }
-        try{
-            if (com in 1..3)
-                x = Integer.parseInt(r)
-        }
-        catch (e: NumberFormatException){
-            println("Дерево настроено только для работы с целыми числами")
-            continue
-        }
-        when (com){
-            1 -> tree.add(x, x)
-            2 -> tree.remove(x)
-            3 -> {
-                val found = tree.check(x)
-                println(if (!found) "NO" else "YES")
-            }
-            4 -> tree.draw()
-            5 -> {
-                for (i in tree){
-                    println("(${i.key}/${i.value}/${if (i.color == true) "RED" else "BLACK"})")
-                }
-            }
-            else -> return
-        }
+fun RBT_iterate(tree: RedBlackTree<Int, Int>) {
+    for (node in tree) {
+        node.print()
+        println()
     }
 }
 
-fun work_with_BTree(read: Scanner, t: Int){
-    val tree: BTree<Int, Int> = BTree(null, t)
-    var r: String
-    var com: Int
-    var x: Int = 0
-    while (true){
-        r = read.next()
-        try{
-            com = Integer.parseInt(r)
-        }
-        catch (e: NumberFormatException){
-            println("Используйте цифры для выбора команд")
-            r = read.nextLine()
-            continue
-        }
-        if (com in 1..3){
-            r = read.next()
-        }
-        try{
-            if (com in 1..3)
-                x = Integer.parseInt(r)
-        }
-        catch (e: NumberFormatException){
-            println("Дерево настроено только для работы с целыми числами")
-            continue
-        }
-        when (com){
-            1 -> tree.add(x, x)
-            2 -> tree.remove(x)
-            3 -> {
-                val found = tree.check(x)
-                println(if (!found) "NO" else "YES")
-            }
-            4 -> tree.draw()
-//            5 -> {
-//                for (i in tree){
-//                    println("(${i.key}/${i.value}/${if (i.color == true) "RED" else "BLACK"})")
-//                }
-//            }
-            else -> return
-        }
+fun BT_iterate(tree: BTree<Int, Int>) {
+    for (node in tree) {
+        node.print()
+        println()
     }
 }
 
@@ -144,25 +34,26 @@ fun main(args: Array<String>){
                 "3 - B-tree\n" +
                 "0 - выход")
         var r: String
-        var tree: Int
+        var tr: Int = 0
+        val tree: Tree<Int, Int>
         var t: Int = 5
         while (true) {
             r = read.next()
             try {
-                tree = Integer.parseInt(r)
+                tr = Integer.parseInt(r)
             } catch (e: NumberFormatException) {
                 println("Используйте цифры для выбора команд")
                 r = read.nextLine()
                 continue
             }
-            if (tree in 0..3)
+            if (tr in 0..3)
                 break
             else
                 println("Используйте числа 0..3")
         }
-        if (tree == 0)
+        if (tr == 0)
             return
-        if (tree == 3){
+        if (tr == 3){
             print("Введите минимальную степень дерева: ")
             while (true) {
                 r = read.next()
@@ -186,11 +77,50 @@ fun main(args: Array<String>){
                 "4 - нарисовать дерево\n " +
                 "5 - вывод итератором\n " +
                 "0 - выход")
-        when (tree) {
-            1 -> work_with_BSTree(read)
-            2 -> work_with_RBTree(read)
-            3 -> work_with_BTree(read, t)
+        when (tr) {
+            1 -> tree = BinarySearchTree<Int, Int>(null)
+            2 -> tree = RedBlackTree<Int, Int>(null)
+            3 -> tree = BTree<Int, Int>(null, t)
             else -> return
+        }
+        loop@ while (true) {
+            var com: Int
+            var x: Int = 0
+            r = read.next()
+            try {
+                com = Integer.parseInt(r)
+            } catch (e: NumberFormatException) {
+                println("Используйте цифры для выбора команд")
+                r = read.nextLine()
+                continue
+            }
+            if (com in 1..3) {
+                r = read.next()
+            }
+            try {
+                if (com in 1..3)
+                    x = Integer.parseInt(r)
+            } catch (e: NumberFormatException) {
+                println("Дерево настроено только для работы с целыми числами")
+                continue
+            }
+            when (com) {
+                1 -> tree.add(x, x)
+                2 -> tree.remove(x)
+                3 -> {
+                    val found = tree.check(x)
+                    println(if (!found) "NO" else "YES")
+                }
+                4 -> tree.draw()
+                5 -> {
+                    when(tr) {
+                        1 -> BST_iterate(tree as BinarySearchTree<Int, Int>)
+                        2 -> RBT_iterate(tree as RedBlackTree<Int, Int>)
+                        3 -> BT_iterate(tree as BTree<Int, Int>)
+                    }
+                }
+                else -> break@loop
+            }
         }
     }
 }

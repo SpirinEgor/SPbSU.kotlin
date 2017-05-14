@@ -8,6 +8,10 @@ public class RBNode<K : Comparable<K>, V>(override var key: K, override var valu
     var right: RBNode<K, V>? = null
     var parent: RBNode<K, V>? = null
 
+    public override fun print() {
+        print("($key/$value/${if (color) "RED" else "BLACK"})")
+    }
+
     public fun getMinimum(nil: RBNode<K, V>): RBNode<K, V> {
         if (this.left == nil)
             return this

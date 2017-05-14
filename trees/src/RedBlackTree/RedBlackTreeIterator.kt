@@ -1,33 +1,30 @@
 package RedBlackTree
 
-open class RedBlackTreeIterator<K : Comparable<K>, V>(var node: RBNode<K, V>?, var nil: RBNode<K, V>?): Iterator<RBNode<K, V>>{
+open class RedBlackTreeIterator<K : Comparable<K>, V>(val tree: RedBlackTree<K, V>): Iterator<RBNode<K, V>>{
 
-    private var next: RBNode<K, V>? = null
-    private var cur: RBNode<K, V>? = null
+    var used: Boolean = false
+    var last: RBNode<K, V>? = if (tree.root != null) tree.root?.getMaximum(tree.nil!!) else null
+    var cur: RBNode<K, V>? = if (tree.root != null) tree.root?.getMinimum(tree.nil!!) else null
 
-    private fun get_min(cur: RBNode<K, V>): RBNode<K, V> = if (cur.left != null && cur.left != nil) get_min(cur.left!!) else cur
-
-    override fun hasNext(): Boolean {
-        if (node == null || node == nil)
+    override fun hasNext(): Boolean{
+        if (tree.root == null)
             return false
-        if (next == null || next == nil){
-            next = get_min(node!!)
-            return true
-        }
-        cur = next
-        if (cur!!.right != null && cur!!.right != nil){
-            next = get_min(cur!!.right!!)
-            return true
-        }
-        if (cur!!.parent != null && cur!!.parent != nil && cur!!.parent!!.left == cur){
-            next = cur!!.parent
-            return true
-        }
-        else{
-            return false
-        }
+        return last != cur || !used
     }
 
-    override fun next(): RBNode<K, V> = next!!
+    override fun next(): RBNode<K, V> {
+        if (cur == last && !used) {
+            used = true
+            return cur!!
+        }
+        val ans = cur
+        if (cur!!.right != tree.nil){
+            cur = cur!!.right!!.getMinimum(tree.nil!!)
+            return ans!!
+        }
+        while (cur!!.parent!!.right == cur) cur = cur!!.parent!!
+        cur = cur!!.parent!!
+        return ans!!
+    }
 
 }

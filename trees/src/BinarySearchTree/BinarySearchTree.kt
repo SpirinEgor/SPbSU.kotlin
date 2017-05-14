@@ -2,7 +2,9 @@ package BinarySearchTree
 
 import Tree
 
-public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tree<K, V>{
+public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tree<K, V>, Iterable<BSNode<K, V>>{
+
+    override fun iterator(): Iterator<BSNode<K, V>> = BinarySearchTreeIterator(this)
 
     public override fun draw(){ //функция рисования дерева
         if (root == null){  //если корень не существует
@@ -12,22 +14,22 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tr
         var queue: MutableList<BSNode<K, V>?> = mutableListOf() //лист для вывода текущего уровня
         queue.add(root)
         var isPrint = true
-        var indent = 50 //регулировка кривости 1.0
+        var indent = 40 //регулировка кривости 1.0
         while (isPrint){
             isPrint = false
             indent = (2 * indent - 1) / 3   //регулировка кривости 2.0
-            var new_queue: MutableList<BSNode<K, V>?> = mutableListOf() //следующий уровень
+            val new_queue: MutableList<BSNode<K, V>?> = mutableListOf() //следующий уровень
             for (i in 0..queue.size - 1){
                 for (j in 1..indent)    //отступ
                     print(" ")
                 if (queue[i] == null){  //если нет вершины, то пропуск
-                    print(" ")
+                    print("null")
                     new_queue.add(null) //и добавляем null
                     new_queue.add(null)
                 }
                 else{
                     isPrint = true
-                    print("(${queue[i]?.key}/${queue[i]?.value})")  //вывели значение
+                    queue[i]!!.print()  //вывели значение
                     new_queue.add(queue[i]?.left)   //добавили детей
                     new_queue.add(queue[i]?.right)
                 }
@@ -52,6 +54,7 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tr
             if (cur.key < key){  //если больше текущего, то идем вправо
                 if (cur.right == null){ //если справа пусто, то ставим туда новую вершину
                     cur.right = BSNode(key, value)
+                    cur.right!!.parent = cur
                     return
                 }
                 else{   //иначе переходим в правое поддерево
@@ -61,6 +64,7 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tr
             else{    //если меньше или равно, то идем влево
                 if (cur.left == null){  //если слева пусто, то ставим туда новую вершину
                     cur.left = BSNode(key, value)
+                    cur.left!!.parent = cur
                     return
                 }
                 else{   //иначе переходим влево
