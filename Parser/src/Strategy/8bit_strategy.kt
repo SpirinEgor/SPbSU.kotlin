@@ -6,8 +6,8 @@ class `8bit_strategy`(val info: MutableMap<String, Int>, val data: Array<Byte>, 
 
     private fun parser(data: Array<Byte>, index: Int, count: Int): Int{
         var result: Int = 0
-        for (i in 1..count){
-            var num = data[index + i - 1].toInt()
+        for (i in 0..count - 1){
+            var num = data[index + i].toInt()
             if (num < 0) num += 256
             result += num.shl(i * 8)
         }

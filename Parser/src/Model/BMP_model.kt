@@ -13,8 +13,8 @@ class BMP_model(var busy: Boolean = false): Model{
 
     fun parser(data: Array<Byte>, index: Int, count: Int): Int{
         var result: Int = 0
-        for (i in 1..count){
-            var num = data[index + i - 1].toInt()
+        for (i in 0..count - 1){
+            var num = data[index + i].toInt()
             if (num < 0) num += 256
             result += num.shl(i * 8)
         }
@@ -24,6 +24,7 @@ class BMP_model(var busy: Boolean = false): Model{
     fun getInfo(data: Array<Byte>): MutableMap<String, Int>{
         val info: MutableMap<String, Int> = mutableMapOf()
         val VERSION = parser(data, 14, 4)
+        println(VERSION)
         if (VERSION == 40){
             info.put("fileSize", parser(data, 2, 4))
             info.put("bitWidth", parser(data, 18, 4))
@@ -35,6 +36,9 @@ class BMP_model(var busy: Boolean = false): Model{
             info.put("bitSize", parser(data, 34, 4))
             info.put("bitUsed", parser(data, 46, 4))
             info.put("bitImportant", parser(data, 50, 4))
+        }
+        for (i in info){
+            println("${i.key} ${i.value}")
         }
         return info
     }
@@ -56,20 +60,18 @@ class BMP_model(var busy: Boolean = false): Model{
         register()
         val info = getInfo(data)
         val data_image = getData(data)
-        var render: Strategy? = null
         when (info["bitCount"]){
             8 ->{
                 val colorTable = getColorTable(data, info)
-                render = `8bit_strategy`(info, data, data_image, colorTable)
+                image = `8bit_strategy`(info, data, data_image, colorTable).render()
             }
             24 ->{
-                render = `24&32bit_strategy`(info, data, 3)
+                image = `24&32bit_strategy`(info, data, 3).render()
             }
             32 ->{
-                render = `24&32bit_strategy`(info, data, 4)
+                image = `24&32bit_strategy`(info, data, 4).render()
             }
         }
-        image = render?.render()
         if (!busy){
             event(image!!, info)
         }
