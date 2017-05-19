@@ -18,12 +18,12 @@ class `8bit_strategy`(val info: MutableMap<String, Int>, val data: Array<Byte>, 
         var num: Int
         val height = info["bitHeight"]!!
         val width = info["bitWidth"]!!
-        val file_size = info["fileSize"]
-        val shift = (file_size!! - 54 - 4 * info["bitUsed"]!!) / height - width
+        val file_size = info["fileSize"]!!
+        //val shift = (file_size - 4 * info["bitUsed"]!! + 54) / height - width
         val image = BufferedImage(width, height, 1)
         for (i in 0..height - 1){
             for (j in 0..width - 1){
-                num = parser(data, i * (shift + width) + j, 1)
+                num = parser(data, i * width + j, 1)
                 val pixel = parser(colorTable, num * 4, 4)
                 image.setRGB(j, height - i - 1, pixel)
             }

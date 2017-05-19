@@ -27,6 +27,8 @@ class BMP_model(var busy: Boolean = false): Model{
         println(VERSION)
         if (VERSION == 40){
             info.put("fileSize", parser(data, 2, 4))
+            info.put("bitDataOfSet", parser(data, 10, 4))
+            info.put("infoSize", parser(data, 14, 4))
             info.put("bitWidth", parser(data, 18, 4))
             width = info["bitWidth"]!!
             info.put("bitHeight", parser(data, 22, 4))
@@ -47,8 +49,8 @@ class BMP_model(var busy: Boolean = false): Model{
             data.sliceArray(IntRange(parser(data, 10, 4), parser(data, 2, 4) - 1))
 
     fun getColorTable(data: Array<Byte>, info: MutableMap<String, Int>): Array<Byte>{
-        if (info["bitUsed"] == 0){
-            info["bitUsed"] = 1.shl(info["bitCount"]!!)
+        if (info["bitUsed"]!! == 0){
+            info.put("bitUsed", 1.shl(info["bitCount"]!!))
         }
         return data.sliceArray(IntRange(54, 54 + info["bitUsed"]!! * 4 - 1))
     }
@@ -63,13 +65,13 @@ class BMP_model(var busy: Boolean = false): Model{
         when (info["bitCount"]){
             8 ->{
                 val colorTable = getColorTable(data, info)
-                image = `8bit_strategy`(info, data, data_image, colorTable).render()
+                image = `8bit_strategy`(info, data_image, data, colorTable).render()
             }
             24 ->{
-                image = `24&32bit_strategy`(info, data, 3).render()
+                image = `24&32bit_strategy`(info, data_image, 3).render()
             }
             32 ->{
-                image = `24&32bit_strategy`(info, data, 4).render()
+                image = `24&32bit_strategy`(info, data_image, 4).render()
             }
         }
         if (!busy){
