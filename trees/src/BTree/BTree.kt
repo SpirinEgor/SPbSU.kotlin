@@ -1,6 +1,5 @@
 package BTree
 
-import RedBlackTree.RBNode
 import Tree
 
 public class BTree<K: Comparable<K>, V>(var root: BNode<K, V>?, val t: Int): Iterable<BNode<K, V>>, Tree<K, V> {
@@ -176,6 +175,20 @@ public class BTree<K: Comparable<K>, V>(var root: BNode<K, V>?, val t: Int): Ite
         if (!check(key))
             return
         remove(root!!, key)
+    }
+
+    @Override
+    public fun equals(other: BTree<K, V>): Boolean{
+        val cur_nodes: MutableList<BNode<K, V>> = this.toMutableList()
+        val other_nodes: MutableList<BNode<K, V>> = other.toMutableList()
+        if (this.t != other.t)
+            return false
+        if (cur_nodes.size != other_nodes.size)
+            return false
+        for (i in 0..cur_nodes.size - 1)
+            if (!cur_nodes[i].equals(other_nodes[i]))
+                return false
+        return true
     }
 
 }

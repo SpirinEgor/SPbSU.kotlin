@@ -62,4 +62,9 @@ public class RBNode<K : Comparable<K>, V>(override var key: K, override var valu
         return root
     }
 
+    @Override
+    public fun equals(other: RBNode<K, V>): Boolean{
+        return this.key == other.key && this.value == other.value && this.color == this.color
+    }
+
 }

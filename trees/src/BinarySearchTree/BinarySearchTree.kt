@@ -187,4 +187,16 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tr
 
     public override fun check(key: K): Boolean = search(key) != null
 
+    @Override
+    public fun equals(other: BinarySearchTree<K, V>): Boolean{
+        val cur_nodes = this.toMutableList()
+        val other_nodes = this.toMutableList()
+        if (cur_nodes.size != other_nodes.size)
+            return false
+        for (i in 0.. cur_nodes.size - 1)
+            if (!cur_nodes[i].equals(other_nodes[i]))
+                return false
+        return true
+    }
+
 }

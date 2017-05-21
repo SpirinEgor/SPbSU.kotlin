@@ -24,9 +24,14 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
             for (i in 0..queue.size - 1){
                 for (j in 1..indent)    //отступ
                     print(" ")
-                if (queue[i] == null || queue[i] == nil){  //если нет вершины, то пропуск
+                if (queue[i] == null){  //если нет вершины, то пропуск
                     print(" null ")
                     new_queue.add(null) //и добавляем null
+                    new_queue.add(null)
+                }
+                else if (queue[i] == nil){
+                    print(" nil ")
+                    new_queue.add(null)
                     new_queue.add(null)
                 }
                 else{
@@ -238,6 +243,18 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
         }
         if (!original_color)
             fix_remove(replace)
+    }
+
+    @Override
+    public fun equals(other: RedBlackTree<K, V>): Boolean{
+        val cur_nodes = this.toMutableList()
+        val other_nodes = other.toMutableList()
+        if (cur_nodes.size != other_nodes.size)
+            return false
+        for (i in 0.. cur_nodes.size - 1)
+            if (!cur_nodes[i].equals(other_nodes[i]))
+                return false
+        return true
     }
 
 }

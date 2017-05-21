@@ -1,7 +1,5 @@
 package BTree
 
-import Node
-
 public class BNode<K: Comparable<K>, V>{
 
     var keys: MutableList<BNodeSingle<K, V>> = mutableListOf<BNodeSingle<K, V>>()
@@ -57,6 +55,15 @@ public class BNode<K: Comparable<K>, V>{
             return this
         else
             return this.children.last().getMaximum()
+    }
+
+    @Override
+    public fun equals(other: BNode<K, V>): Boolean{
+        if (this.leaf != other.leaf) return false
+        if (this.keys.size != other.keys.size) return false
+        for (i in 0..this.keys.size - 1)
+            if (!this.keys[i].equals(other.keys[i])) return false
+        return true
     }
 
 }
