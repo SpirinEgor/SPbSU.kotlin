@@ -1,8 +1,9 @@
 import Controller.*
 import Model.*
+import Observer.BMP_observer
 
 fun main(args: Array<String>){
-    val model = BMP_model()
+    val model = BMP_model(BMP_observer())
     val controller = BMP_controller()
     var filename: String = ""
     if (args.isEmpty())
@@ -14,6 +15,7 @@ fun main(args: Array<String>){
         filename = readLine()!!
     }
     if (controller.Validator(filename)){
+        filename = "./Pictures/" + filename
         val result = controller.PassData(model, filename)
         if (result != null)
             println(result)

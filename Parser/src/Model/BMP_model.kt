@@ -4,12 +4,10 @@ import Observer.*
 import Strategy.*
 import java.awt.image.BufferedImage
 
-class BMP_model(var busy: Boolean = false): Model{
-    val obs: BMP_observer = BMP_observer()
-    var observers: MutableSet<BMP_observer> = mutableSetOf()
-    var image: BufferedImage? = null
-    var height: Int = 0
-    var width: Int = 0
+class BMP_model(val obs: Observer, var busy: Boolean = false): Model{
+    private var image: BufferedImage? = null
+    private var height: Int = 0
+    private var width: Int = 0
 
     fun parser(data: Array<Byte>, index: Int, count: Int): Int{
         var result: Int = 0
@@ -59,7 +57,6 @@ class BMP_model(var busy: Boolean = false): Model{
         val type = parser(data, 0, 2)
         if (type != 19778)
             return ("Invalid signature")
-        register()
         val info = getInfo(data)
         val data_image = getData(data)
         when (info["bitCount"]){
@@ -80,18 +77,10 @@ class BMP_model(var busy: Boolean = false): Model{
         return null
     }
 
-    override fun delete(){
-        observers.remove(obs)
-    }
-
-    override fun register(){
-        observers.add(obs)
-    }
+    fun get_image(): BufferedImage = image!!
 
     override fun event(image: BufferedImage, info: MutableMap<String, Int>) {
-        for (obs in observers){
-            obs.update(image, info)
-        }
+        obs.update(image, info)
     }
 
 }
