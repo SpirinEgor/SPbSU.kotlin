@@ -1,11 +1,8 @@
 # Kotlin
 
-## Task for programming lessons
+### Task for programming lessons
 
-BinarySearchTree ![done](http://www.riemaken.nl/sites/default/files/styles/archief_klein/public/artikel/24-resultaten-gebruikersonderzoek-ima.jpg?itok=id9sum8g)
-
-RedBlackTree ![done](http://www.riemaken.nl/sites/default/files/styles/archief_klein/public/artikel/24-resultaten-gebruikersonderzoek-ima.jpg?itok=id9sum8g)
-
-B-tree ![done](http://www.riemaken.nl/sites/default/files/styles/archief_klein/public/artikel/24-resultaten-gebruikersonderzoek-ima.jpg?itok=id9sum8g)
-
-PictureParser ![done](http://www.riemaken.nl/sites/default/files/styles/archief_klein/public/artikel/24-resultaten-gebruikersonderzoek-ima.jpg?itok=id9sum8g)
+1. BinarySearchTree 
+2. RedBlackTree
+3. B-tree
+4. PictureParser
