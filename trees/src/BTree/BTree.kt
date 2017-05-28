@@ -42,15 +42,15 @@ public class BTree<K: Comparable<K>, V>(var root: BNode<K, V>?, val t: Int): Ite
     public fun search(cur: BNode<K, V>?, key: K): Pair<BNode<K, V>?, Int>{
         if (cur == null)
             return Pair(null, 0)
-        var index = 0
-        while (index < cur.keys.size && key > cur.keys[index].key)
-            ++index
-        if (index < cur.keys.size && key == cur.keys[index].key)
+        var index = cur.keys.binarySearch { bNodeSingle -> bNodeSingle.key - key }
+        if (index >= 0 && key == cur.keys[index].key)
             return Pair(cur, index)
         else if (cur.leaf)
             return Pair(null, 0)
-        else
+        else {
+            index = -index -1
             return search(cur.children[index], key)
+        }
     }
 
     public override fun check(key: K): Boolean = search(root, key).first != null
@@ -75,9 +75,9 @@ public class BTree<K: Comparable<K>, V>(var root: BNode<K, V>?, val t: Int): Ite
     }
 
     private fun add_nonfull(cur: BNode<K, V>, key: K, value: V){
-        var index = 0
-        while (index < cur.keys.size && key > cur.keys[index].key)
-            ++index
+        var index = cur.keys.binarySearch { bNodeSingle -> bNodeSingle.key - key }
+        if (index < 0)
+            index = -index - 1
         if (cur.leaf)
             cur.keys.add(index, BNodeSingle(key, value))
         else{
@@ -97,8 +97,10 @@ public class BTree<K: Comparable<K>, V>(var root: BNode<K, V>?, val t: Int): Ite
             root!!.parent = null
             return
         }
-        if (check(key))
+        if (check(key)) {
+            println("This key already exists")
             return
+        }
         val cur = root
         if (cur!!.keys.size == (2 * t - 1)){
             val new = BNode<K, V>()
@@ -120,16 +122,12 @@ public class BTree<K: Comparable<K>, V>(var root: BNode<K, V>?, val t: Int): Ite
                     return
                 }
             }
-            var index = 0   //удаляем ключ
-            while (cur.keys[index].key != key)
-                ++index
+            val index = cur.keys.binarySearch { bNodeSingle -> bNodeSingle.key - key }
             cur.keys.removeAt(index)
             return
         }
-        var index = 0
-        while (index < cur.keys.size && key > cur.keys[index].key)
-            ++index
-        if (index < cur.keys.size && cur.keys[index].key == key) { //если ключ лежит в cur и cur внутренний узел (Кормен 2)
+        var index = cur.keys.binarySearch { a -> a.key - key }
+        if (index >= 0 && cur.keys[index].key == key) { //если ключ лежит в cur и cur внутренний узел (Кормен 2)
             if (cur.children[index].keys.size > t - 1) {  //если предшествующему дочернему ключу узел содержит >= t элементов (Кормен 2.а)
                 cur.keys[index] = cur.children[index].keys.last()   //заменим предшественником
                 remove(cur.children[index], cur.keys[index].key)    //удалим рекурсивно
@@ -147,6 +145,7 @@ public class BTree<K: Comparable<K>, V>(var root: BNode<K, V>?, val t: Int): Ite
         }
         else{   //если ключ не лежит в cur (Кормен 3)
             val parent = cur
+            index = -index - 1
             cur = cur.children[index]
             if (cur.keys.size <= t - 1){    //если в вершине с ключом <= t - 1 ключ
                 if (index > 0 && parent.children[index - 1].keys.size > t - 1)  //если у левого соседа >= t, то переносим (Кормен 3.а.а)
@@ -191,4 +190,16 @@ public class BTree<K: Comparable<K>, V>(var root: BNode<K, V>?, val t: Int): Ite
         return true
     }
 
+}
+
+private operator fun  <K> K.minus(key: K): Int {
+    val t = this as Int
+    val k = key as Int
+    val res: Long = t.toLong() - k.toLong()
+    if (res < 0)
+        return -1
+    else if (res > 0)
+        return 1
+    else
+        return 0
 }

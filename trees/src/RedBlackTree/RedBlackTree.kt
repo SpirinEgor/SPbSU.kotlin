@@ -114,8 +114,10 @@ public class RedBlackTree<K : Comparable<K>, V>(var root: RBNode<K, V>?): Iterab
             root!!.right = nil
             return
         }
-        if (check(key))
+        if (check(key)) {
+            println("This key already exists")
             return
+        }
         val new = RBNode(key, value, true)
         var dad = nil
         var cur = root

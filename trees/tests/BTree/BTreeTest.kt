@@ -114,6 +114,7 @@ internal class BTreeTest{
             inserted.add(cur)
             tree.add(cur, cur)
         }
+        //print(inserted)
         for (ins in inserted){
             val cur: Pair<BNode<Int, Int>?, Int> = tree.search(tree.root, ins)
             assertEquals(cur.first!!.keys[cur.second].key, ins)

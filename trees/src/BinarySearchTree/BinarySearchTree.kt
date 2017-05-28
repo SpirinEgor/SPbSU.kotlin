@@ -44,8 +44,10 @@ public class BinarySearchTree<K : Comparable<K>, V>(var root: BSNode<K, V>?): Tr
             root = BSNode(key, value)
             return
         }
-        if (check(key))
+        if (check(key)) {
+            println("This key already exists")
             return
+        }
         var cur = root
         while (true){
             if (cur == null){

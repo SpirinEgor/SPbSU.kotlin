@@ -173,6 +173,50 @@ internal class RedBlackTreeTest {
     }
 
     @Test
+    fun addRedFatherRedUncle(){
+        val tree = RedBlackTree<Int, Int>(null)
+        tree.add(10, 10)
+        tree.add(5, 5)
+        tree.add(15, 15)
+        tree.add(7, 7)
+        val idealTree = RedBlackTree<Int, Int>(null)
+        idealTree.root = RBNode<Int, Int>(10, 10, false)
+        idealTree.nil = RBNode<Int, Int>(10, null, false)
+        idealTree.root!!.parent = idealTree.nil
+        idealTree.root!!.right = RBNode<Int, Int>(15, 15, false)
+        idealTree.root!!.right!!.left = idealTree.nil
+        idealTree.root!!.right!!.right = idealTree.nil
+        idealTree.root!!.right!!.parent = idealTree.root
+        idealTree.root!!.left = RBNode<Int, Int>(7, 7, false)
+        idealTree.root!!.left!!.parent = idealTree.root
+        idealTree.root!!.left!!.right = idealTree.nil
+        idealTree.root!!.left!!.left = RBNode<Int, Int>(5, 5, true)
+        idealTree.root!!.left!!.left!!.parent = idealTree.root!!.left
+        idealTree.root!!.left!!.left!!.left = idealTree.nil
+        idealTree.root!!.left!!.left!!.right = idealTree.nil
+        assert(tree.equals(idealTree))
+    }
+
+    @Test
+    fun addRedFatherBlackUncle(){
+        val tree = RedBlackTree<Int, Int>(null)
+        tree.add(10, 10)
+        tree.add(5, 5)
+        tree.add(15, 15)
+        tree.root!!.right!!.color = false
+        tree.add(7, 7)
+        val idealTree = RedBlackTree<Int, Int>(null)
+        idealTree.add(7, 7)
+        idealTree.add(5, 5)
+        idealTree.add(10, 10)
+        idealTree.root!!.right!!.right = RBNode<Int, Int>(15, 15, false)
+        idealTree.root!!.right!!.right!!.parent = idealTree.root!!.right
+        idealTree.root!!.right!!.right!!.right = idealTree.nil
+        idealTree.root!!.right!!.right!!.left = idealTree.nil
+        assert(tree.equals(idealTree))
+    }
+
+    @Test
     fun removeExistentValue() {
         val tree = RedBlackTree<Int, Int>(null)
         tree.add(13, 13)
