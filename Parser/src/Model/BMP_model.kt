@@ -54,27 +54,32 @@ class BMP_model(val obs: Observer, var busy: Boolean = false): Model{
     }
 
     override fun set(data: Array<Byte>): String? {
-        val type = parser(data, 0, 2)
-        if (type != 19778)
-            return ("Invalid signature")
-        val info = getInfo(data)
-        val data_image = getData(data)
-        when (info["bitCount"]){
-            8 ->{
-                val colorTable = getColorTable(data, info)
-                image = `8bit_strategy`(info, data_image, data, colorTable).render()
+        try {
+            val type = parser(data, 0, 2)
+            if (type != 19778)
+                return ("Invalid signature")
+            val info = getInfo(data)
+            val data_image = getData(data)
+            when (info["bitCount"]) {
+                8 -> {
+                    val colorTable = getColorTable(data, info)
+                    image = `8bit_strategy`(info, data_image, data, colorTable).render()
+                }
+                24 -> {
+                    image = `24&32bit_strategy`(info, data_image, 3).render()
+                }
+                32 -> {
+                    image = `24&32bit_strategy`(info, data_image, 4).render()
+                }
             }
-            24 ->{
-                image = `24&32bit_strategy`(info, data_image, 3).render()
+            if (!busy) {
+                event(image!!, info)
             }
-            32 ->{
-                image = `24&32bit_strategy`(info, data_image, 4).render()
-            }
+            return null
         }
-        if (!busy){
-            event(image!!, info)
+        catch (e: ArrayIndexOutOfBoundsException){
+            return "Valid .bmp file"
         }
-        return null
     }
 
     fun get_image(): BufferedImage = image!!
